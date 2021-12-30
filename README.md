@@ -1,7 +1,10 @@
 # video stream image stacking
- A simple video stream image stacking python program
 
-A very simple streamed video image stacking code!
+A simple video stream image stacking python program
+
+Useful in seeing stationary small letters, numbers or details visible in 
+your security video camera stream. reduces night time low-light camera noise. 
+developed for my own home security camera use.
 
 improves statistical camera noise (and the resolution a little) by stacking
 many images captured from an rtsp protocol security camera.
