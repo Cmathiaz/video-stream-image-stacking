@@ -54,6 +54,7 @@ if not ret:
 img = np.zeros(frame.shape, np.uint8)
 imgBGR = np.zeros(frame.shape, np.uint32)
 imgFinal = np.zeros(frame.shape, np.uint32)
+imgDiff = np.zeros(frame.shape, np.uint8)
 
 # capture 100 frames and stop, camera fps is usually 25 frames per second
 # so the capture time is 4 seconds
@@ -67,7 +68,7 @@ while count < 100:  # can change to higher number, but improvements are marginal
     # copy frame to image for manipulation
     img = frame  # copy frame to image, not necessary, wasted some memory here
     H, W, Ch = img.shape  # get height, width and channel sizes
-    imgBGR[:, :, 0:3] += img[0:H, 0:W, 0:3]  # stack images by adding and accumulating BGR
+    imgBGR[:, :, 0:3] += img[:, :, 0:3]  # stack images by adding and accumulating BGR
 
     cv2.imshow("Capturing", img)
 
@@ -80,9 +81,11 @@ while count < 100:  # can change to higher number, but improvements are marginal
 cap.release()
 cv2.destroyAllWindows()
 
-imgFinal = ((imgBGR[:, :, :]/count).astype(int))  # find average and recast
+imgFinal = np.uint8(imgBGR[:, :, :]/count)  # find average and recast
                                                   # to integers
 print('captured frame height, width and channels =', H, W, Ch)
+
+imgDiff = cv2.absdiff(imgFinal, img)  # difference between the last frame and the stacked image
 
 # recast bgr to rgb channels for matlabplot
 b, g, r = cv2.split(imgFinal)
@@ -90,5 +93,12 @@ img_rgb = cv2.merge((r, g, b))
 
 print('final image size =', img_rgb.shape)
 plt.title('final stacked image!')
+plt.imshow(img_rgb)
+plt.show()
+
+# now show the difference image
+b, g, r = cv2.split(imgDiff)
+img_rgb = cv2.merge((r, g, b))
+plt.title('the difference from the last captured frame!')
 plt.imshow(img_rgb)
 plt.show()
